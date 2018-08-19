@@ -16,7 +16,7 @@ open System.Runtime.InteropServices
 [<assembly:AssemblyFlags(System.Reflection.AssemblyNameFlags.Retargetable)>]
 #endif
 
-[<assembly:AssemblyInformationalVersion("4.4.3.0")>]
+// [<assembly:AssemblyInformationalVersion("4.4.3.0")>]
 [<assembly:AssemblyVersion("4.4.3.0")>]
 [<assembly:AssemblyFileVersion("2017.06.27.0")>]
 do()
