@@ -16,8 +16,14 @@ open System.Runtime.InteropServices
 [<assembly:AssemblyFlags(System.Reflection.AssemblyNameFlags.Retargetable)>]
 #endif
 
+<<<<<<< HEAD
 // [<assembly:AssemblyInformationalVersion("4.4.3.0")>]
 [<assembly:AssemblyVersion("4.4.3.0")>]
 [<assembly:AssemblyFileVersion("2017.06.27.0")>]
+=======
+[<assembly:AssemblyInformationalVersion("4.5.0.0")>]
+[<assembly:AssemblyVersion("4.5.0.0")>]
+[<assembly:AssemblyFileVersion("2018.05.23.0")>]
+>>>>>>> upstream/master
 do()
 
