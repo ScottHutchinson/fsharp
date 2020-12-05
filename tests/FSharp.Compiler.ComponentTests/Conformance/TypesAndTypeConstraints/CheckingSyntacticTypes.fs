@@ -66,6 +66,21 @@ namespace FSharpTest
         |> ignore
 
     [<Test>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Cyclic Struct Tuple of int, Tree`` () =
+        FSharp """
+namespace FSharpTest
+
+    [<Struct>]
+    type Tree =
+        | Empty
+        | Children of struct (int * Tree)
+"""
+        |> compile
+        |> shouldFail
+        |> withErrorCode 954
+        |> ignore
+
+    [<Test>]
     let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Non-cyclic Struct Tuple`` () =
         FSharp """
 namespace FSharpTest
