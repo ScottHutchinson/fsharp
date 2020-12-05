@@ -3,6 +3,7 @@
 namespace FSharp.Compiler.ComponentTests.Conformance.TypesAndTypeConstraints
 
 open Xunit
+open NUnit.Framework
 open FSharp.Test.Utilities.Compiler
 open FSharp.Test.Utilities.Xunit.Attributes
 
@@ -34,3 +35,46 @@ module CheckingSyntacticTypes =
         |> withDiagnosticMessageMatches "This member, function or value declaration may not be declared 'inline'"
         |> ignore
 
+    [<Test>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Cyclic Tuple`` () =
+        FSharp """
+namespace FSharpTest
+
+    [<Struct>]
+    type Tree =
+        | Empty
+        | Children of Tree * Tree
+"""
+        |> compile
+        |> shouldFail
+        |> withErrorCode 954
+        |> ignore
+
+    [<Test>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Cyclic Struct Tuple`` () =
+        FSharp """
+namespace FSharpTest
+
+    [<Struct>]
+    type Tree =
+        | Empty
+        | Children of struct (Tree * Tree)
+"""
+        |> compile
+        |> shouldFail
+        |> withErrorCode 954
+        |> ignore
+
+    [<Test>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Non-cyclic Struct Tuple`` () =
+        FSharp """
+namespace FSharpTest
+
+[<Struct>]
+type Tree =
+    | Empty
+    | Children of struct (int * string)
+"""
+        |> compile
+        |> shouldSucceed
+        |> ignore

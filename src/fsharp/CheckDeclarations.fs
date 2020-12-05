@@ -4287,8 +4287,10 @@ module EstablishTypeDefinitionCores =
                     let fspecs = fspecs |> List.filter (fun fspec -> includeStaticFields || not fspec.IsStatic)
                     let doneTypes, acc = List.foldBack (accStructField structTycon tinst) fspecs (doneTypes, acc)
                     doneTypes, acc
-            and accStructInstanceFields ty structTycon tinst (doneTypes, acc) = accStructFields false ty structTycon tinst (doneTypes, acc)
-            and accStructAllFields ty (structTycon: Tycon) tinst (doneTypes, acc) = accStructFields true ty structTycon tinst (doneTypes, acc)
+            and accStructInstanceFields ty structTycon tinst (doneTypes, acc) = 
+                accStructFields false ty structTycon tinst (doneTypes, acc)
+            and accStructAllFields ty (structTycon: Tycon) tinst (doneTypes, acc) = 
+                accStructFields true ty structTycon tinst (doneTypes, acc)
 
             let acc = []
             let acc = 
