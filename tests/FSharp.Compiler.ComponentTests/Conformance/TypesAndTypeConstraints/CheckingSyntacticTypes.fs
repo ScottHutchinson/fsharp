@@ -3,7 +3,6 @@
 namespace FSharp.Compiler.ComponentTests.Conformance.TypesAndTypeConstraints
 
 open Xunit
-open NUnit.Framework
 open FSharp.Test.Utilities.Compiler
 open FSharp.Test.Utilities.Xunit.Attributes
 
@@ -35,8 +34,8 @@ module CheckingSyntacticTypes =
         |> withDiagnosticMessageMatches "This member, function or value declaration may not be declared 'inline'"
         |> ignore
 
-    [<Test>]
-    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Cyclic Tuple`` () =
+    [<Fact>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - Struct DU with Cyclic Tuple`` () =
         FSharp """
 namespace FSharpTest
 
@@ -50,8 +49,8 @@ namespace FSharpTest
         |> withErrorCode 954
         |> ignore
 
-    [<Test>]
-    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Cyclic Struct Tuple`` () =
+    [<Fact>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - Struct DU with Cyclic Struct Tuple`` () =
         FSharp """
 namespace FSharpTest
 
@@ -65,8 +64,8 @@ namespace FSharpTest
         |> withErrorCode 954
         |> ignore
 
-    [<Test>]
-    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Cyclic Struct Tuple of int, Tree`` () =
+    [<Fact>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - Struct DU with Cyclic Struct Tuple of int, Tree`` () =
         FSharp """
 namespace FSharpTest
 
@@ -80,15 +79,43 @@ namespace FSharpTest
         |> withErrorCode 954
         |> ignore
 
-    [<Test>]
-    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - DU with Non-cyclic Struct Tuple`` () =
+    [<Fact>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - Struct DU with Cyclic Tree`` () =
         FSharp """
 namespace FSharpTest
 
-[<Struct>]
-type Tree =
-    | Empty
-    | Children of struct (int * string)
+    [<Struct>]
+    type Tree =
+        | Empty
+        | Children of Tree
+"""
+        |> compile
+        |> shouldFail
+        |> withErrorCode 954
+        |> ignore
+
+    [<Fact>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - Struct DU with Non-cyclic Struct Tuple`` () =
+        FSharp """
+namespace FSharpTest
+
+    [<Struct>]
+    type NotATree =
+        | Empty
+        | Children of struct (int * string)
+"""
+        |> compile
+        |> shouldSucceed
+        |> ignore
+
+    [<Fact>]
+    let ``CheckingSyntacticTypes - TcTyconDefnCore_CheckForCyclicStructsAndInheritance - Non-Struct DU Tree Cyclic Tree`` () =
+        FSharp """
+namespace FSharpTest
+
+    type Tree =
+        | Empty
+        | Children of Tree
 """
         |> compile
         |> shouldSucceed
