@@ -1939,6 +1939,26 @@ type FSharpCheckFileResults
                 FSharpOpenDeclaration(x.Target, x.Range, modules, types, x.AppliedScope, x.IsOwnNamespace)))
         |> Option.defaultValue [| |]
 
+    member this.GetAllEntities (publicOnly: bool) : AssemblySymbol list =
+        try
+        let res = [
+            yield! AssemblyContentProvider.getAssemblySignatureContent AssemblyContentType.Full this.PartialAssemblySignature
+            let ctx = checkResults.ProjectContext
+            let assembliesByFileName =
+            ctx.GetReferencedAssemblies()
+            |> List.groupBy (fun asm -> asm.FileName)
+            |> List.rev // if mscorlib.dll is the first then FSC raises exception when we try to
+                        // get Content.Entities from it.
+
+            for fileName, signatures in assembliesByFileName do
+            let contentType = if publicOnly then Public else Full
+            let content = AssemblyContentProvider.getAssemblyContent entityCache.Locking contentType fileName signatures
+            yield! content
+        ]
+        res
+        with
+        | _ -> []
+
     override _.ToString() = "FSharpCheckFileResults(" + filename + ")"
 
     static member MakeEmpty(filename: string, creationErrors: FSharpDiagnostic[], keepAssemblyContents) = 

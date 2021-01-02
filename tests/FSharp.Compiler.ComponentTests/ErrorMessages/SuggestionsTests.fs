@@ -229,6 +229,16 @@ let x = System.DateTie.MaxValue
                                  ("The value, constructor, namespace or type 'DateTie' is not defined. Maybe you want one of the following:" + System.Environment.NewLine + "   DateTime" + System.Environment.NewLine + "   DateTimeKind" + System.Environment.NewLine + "   DateTimeOffset" + System.Environment.NewLine + "   Data"))
 
     [<Fact>]
+    let ``Suggest Types for Process``() =
+        FSharp """
+Process.Start("explorer.exe", @"https://www.google.com/") |> ignore
+        """
+        |> typecheck
+        |> shouldFail
+        |> withSingleDiagnostic (Error 39, Line 2, Col 1, Line 2, Col 8,
+                                 "The value, namespace, type or module 'Process' is not defined. Maybe you want one of the following:" + System.Environment.NewLine + "   Progress")
+
+    [<Fact>]
     let ``Suggest Union Cases`` () =
         FSharp """
 type MyUnion =
