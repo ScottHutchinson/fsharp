@@ -1,0 +1,1 @@
+- [ ] [MailboxProcessor still process messages(and receives) after Dispose is invoked](https://github.com/dotnet/fsharp/issues/10720)
